@@ -9,14 +9,16 @@ class Snake:
         self.length = length
         self.direction = direction
         self.parent_screen = parent_screen
-        self.snake = pygame.image.load("resources/snake.jpg").convert()
+        x_pos = self.parent_screen.get_size()[0] // 2 
+        y_pos = self.parent_screen.get_size()[1] // 2 
+        self.snake = pygame.draw.rect(parent_screen, (137, 220, 235), Rect(x_pos, y_pos, 20, 20), 4) 
         self.x = [SIZE] * length
         self.y = [SIZE] * length
 
     def drawSnake(self):
-        self.parent_screen.blit(self.parent_screen, (0,0))        
+        self.parent_screen.fill((30, 30, 46))
         for i in range(self.length):
-            self.parent_screen.blit(self.snake, (self.x[i], self.y[i]))
+            pygame.draw.rect(self.parent_screen, (137, 220, 235), Rect(self.x[i], self.y[i], 20, 20), 4) 
         pygame.display.flip()
     
     def slither(self):
@@ -25,14 +27,15 @@ class Snake:
             self.x[i] = self.x[i-1]
             self.y[i] = self.y[i-1]
 
-        if self.direction == "Right":
-            self.x[0] += SIZE
-        if self.direction == "Left":
-            self.x[0] -= SIZE
-        if self.direction == "Up":
-            self.y[0] -= SIZE
-        if self.direction == "Down":
-            self.y[0] += SIZE
+        match self.direction:
+            case "Right":
+                self.x[0] += SIZE
+            case "Left":
+                self.x[0] -= SIZE
+            case "Up":
+                self.y[0] -= SIZE
+            case "Down":
+                self.y[0] += SIZE
         
         self.drawSnake()
 
@@ -54,8 +57,7 @@ class Game:
     def __init__(self): 
         pygame.init() 
         self.screen = pygame.display.set_mode((1280,720))
-        self.grass = pygame.image.load("resources/grass.jpg").convert()
-        self.screen.blit(self.grass, (0,0))        
+        self.background = self.screen.fill((30, 30, 46))
         self.clock = pygame.time.Clock()
         self.snake = Snake(self.screen, "Right", 5)
 
@@ -69,7 +71,6 @@ class Game:
                 if event.type == pygame.QUIT:
                     running = False
 
-            self.screen.blit(self.grass, (0,0))
 
             # Listen for keystokes
             keys = pygame.key.get_pressed() 
@@ -89,7 +90,7 @@ class Game:
             self.snake.slither()          
             # Flip / Update screen
             pygame.display.flip()
-            time.sleep(0.2)
+            time.sleep(0.1)
 
         pygame.quit()
 
